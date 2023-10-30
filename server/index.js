@@ -1,35 +1,10 @@
 import { ApolloServer } from 'apollo-server'
-import { gql } from 'graphql-tag'
 import mongoose from 'mongoose'
 
 import { MONGO_URL } from './config.js'
 
-import Exercise from './models/Exercise.js'
-
-const typeDefs = gql`
-  type Exercise {
-    id: ID!
-    name: String!
-    bodyPart: String!
-    category: String!
-  }
-  type Query {
-    getExercises: [Exercise]
-  }
-`
-
-const resolvers = {
-  Query: {
-    async getExercises() {
-      try {
-        const exercises = await Exercise.find()
-        return exercises
-      } catch (error) {
-        throw new Error(error)
-      }
-    },
-  },
-}
+import typeDefs from './graphql/typeDefs.js'
+import resolvers from './resolvers/index.js'
 
 const server = new ApolloServer({
   typeDefs,
