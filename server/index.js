@@ -1,5 +1,8 @@
 import { ApolloServer } from 'apollo-server'
 import { gql } from 'graphql-tag'
+import mongoose from 'mongoose'
+
+import { MONGO_URL } from './config.js'
 
 const typeDefs = gql`
   type Query {
@@ -18,9 +21,13 @@ const server = new ApolloServer({
   resolvers,
 })
 
-server
-  .listen({
-    port: 5000,
+mongoose
+  .connect(MONGO_URL, { useNewUrlParser: true })
+  .then(() => {
+    console.log('MongoDB Connected')
+    return server.listen({
+      port: 5000,
+    })
   })
   .then((res) => {
     console.log(`Server running at ${res.url}`)
