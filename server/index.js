@@ -4,15 +4,30 @@ import mongoose from 'mongoose'
 
 import { MONGO_URL } from './config.js'
 
+import Exercise from './models/Exercise.js'
+
 const typeDefs = gql`
+  type Exercise {
+    id: ID!
+    name: String!
+    bodyPart: String!
+    category: String!
+  }
   type Query {
-    sayHi: String!
+    getExercises: [Exercise]
   }
 `
 
 const resolvers = {
   Query: {
-    sayHi: () => 'Hello World',
+    async getExercises() {
+      try {
+        const exercises = await Exercise.find()
+        return exercises
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
   },
 }
 
