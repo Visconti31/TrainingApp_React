@@ -4,7 +4,10 @@ import { UserInputError } from 'apollo-server'
 
 import { SECRET_KEY } from '../config.js'
 import User from '../models/User.js'
-import { validateRegisterInputs } from '../util/validators.js'
+import {
+  validateRegisterInputs,
+  validateLoginInputs,
+} from '../util/validators.js'
 
 export default {
   Mutation: {

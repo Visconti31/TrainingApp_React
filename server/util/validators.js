@@ -30,4 +30,29 @@ const validateRegisterInputs = (username, email, password, confirmPassword) => {
   }
 }
 
-export { validateRegisterInputs }
+const validateLoginInputs = (email, password) => {
+  const errors = {}
+
+  // Email validation
+  if (email.trim() === '') {
+    errors.email = 'Email must not be empty'
+  } else {
+    const regEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+
+    if (!email.match(regEx)) {
+      errors.email = 'Must be a valid email'
+    }
+  }
+
+  // Password validation
+  if (password.trim() === '') {
+    errors.password = 'Password must not be empty'
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  }
+}
+
+export { validateRegisterInputs, validateLoginInputs }
