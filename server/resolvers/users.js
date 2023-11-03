@@ -4,6 +4,7 @@ import { UserInputError } from 'apollo-server'
 
 import { SECRET_KEY } from '../config.js'
 import User from '../models/User.js'
+import { validateRegisterInputs } from '../util/validators.js'
 
 export default {
   Mutation: {
@@ -13,9 +14,18 @@ export default {
       context,
       info
     ) {
-      // TODO: Validate user data
-      // TODO: Make sure that user doesn't exist
-      // TODO: Make sure that username is unique
+      // Validate user data
+      const { valid, errors } = validateRegisterInputs(
+        username,
+        email,
+        password,
+        confirmPassword
+      )
+      if (!valid) {
+        throw new UserInputError('Errors', { errors })
+      }
+
+      // Make sure that username is unique
       const userName = await User.findOne({ username })
       if (userName) {
         throw new UserInputError('Username is taken', {
@@ -24,6 +34,7 @@ export default {
           },
         })
       }
+      // Make sure that user doesn't exist
       const userEmail = await User.findOne({ email })
       if (userEmail) {
         throw new UserInputError('Email already exist', {
