@@ -9,8 +9,55 @@ import {
   validateLoginInputs,
 } from '../util/validators.js'
 
+// Helper function to create the token
+function generateToken(user) {
+  return jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    },
+    SECRET_KEY,
+    { expiresIn: '1h' }
+  )
+}
+
 export default {
   Mutation: {
+    //* Login User
+    async login(parent, { loginInputs: { email, password } }, context, info) {
+      const { valid, errors } = validateLoginInputs(email, password)
+
+      // Checking if the inputs are valid
+      if (!valid) {
+        throw new UserInputError('Errors', { errors })
+      }
+
+      // Checking if the user exist
+      const user = await User.findOne({ email })
+      if (!user) {
+        errors.general = 'User not found'
+        throw new UserInputError('Email does not exist', { errors })
+      }
+
+      // Checking if the password match the registered password to the user
+      const match = await bcrypt.compare(password, user.password)
+      if (!match) {
+        errors.general = 'Wrong password'
+        throw new UserInputError('Wrong password', { errors })
+      }
+
+      // Create an auth token
+      const token = generateToken(user)
+
+      return {
+        ...user._doc,
+        id: user._id,
+        token,
+      }
+    },
+
+    //* Register User
     async register(
       parent,
       { registerInput: { username, email, password, confirmPassword } },
@@ -50,25 +97,18 @@ export default {
       // Hash the password before saving
       password = await bcrypt.hash(password, 12)
 
+      // Creating new User instance with the inputs
       const newUser = new User({
         email,
         username,
         password,
         createdAt: new Date().toISOString(),
       })
-
+      // Saving the user in DB
       const res = await newUser.save()
 
       // Create an auth token
-      const token = jwt.sign(
-        {
-          id: res.id,
-          email: res.email,
-          username: res.username,
-        },
-        SECRET_KEY,
-        { expiresIn: '1h' }
-      )
+      const token = generateToken(res)
 
       return {
         ...res._doc,
