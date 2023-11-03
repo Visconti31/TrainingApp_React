@@ -9,6 +9,7 @@ import resolvers from './resolvers/index.js'
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req }) => ({ req }),
 })
 
 mongoose

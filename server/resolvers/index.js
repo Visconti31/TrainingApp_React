@@ -1,5 +1,5 @@
-import exerciseResolvers from './exercises.js'
-import userResolvers from './users.js'
+import exerciseResolvers from './exercise/exercises.js'
+import userResolvers from './users/users.js'
 
 export default {
   Query: {
@@ -8,5 +8,6 @@ export default {
 
   Mutation: {
     ...userResolvers.Mutation,
+    ...exerciseResolvers.Mutation,
   },
 }

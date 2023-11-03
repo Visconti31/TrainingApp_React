@@ -2,12 +2,12 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { UserInputError } from 'apollo-server'
 
-import { SECRET_KEY } from '../config.js'
-import User from '../models/User.js'
+import { SECRET_KEY } from '../../config.js'
+import User from '../../models/User.js'
 import {
   validateRegisterInputs,
   validateLoginInputs,
-} from '../util/validators.js'
+} from '../../util/validators.js'
 
 // Helper function to create the token
 function generateToken(user) {
