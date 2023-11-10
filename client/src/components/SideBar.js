@@ -1,39 +1,51 @@
-import React from 'react'
-
-import { styled } from '@mui/material/styles'
-import Drawer from '@mui/material/Drawer'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import inboxIcon from '@mui/icons-material/MoveToInbox'
-import MainIcon from '@mui/icons-material/Mail'
-import DraftsIcon from '@mui/icons-material/Drafts'
-import DeleteIcon from '@mui/icons-material/Delete'
-import ReportIcon from '@mui/icons-material/Report'
-
-const drawerWidth = 240
-
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  '& .MuiDrawer-paper': {
-    width: drawerWidth,
-    boxSizing: 'border-box',
-  },
-}))
+import React, { useState } from 'react'
+import {
+  Checkbox,
+  Grid,
+  Header,
+  Icon,
+  Menu,
+  Segment,
+  Sidebar,
+} from 'semantic-ui-react'
 
 export default function SideBar() {
+  const [visible, setVisible] = useState(false)
+
   return (
-    <StyledDrawer>
-      <List>
-        <ListItem>
-          <ListItemIcon>
-            <inboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inbox" />
-        </ListItem>
-      </List>
-    </StyledDrawer>
+    <Grid columns={1}>
+      <Grid.Column>
+        <Checkbox
+          checked={visible}
+          label={{ children: <code>visible</code> }}
+          onChange={(e, data) => setVisible(data.checked)}
+        />
+      </Grid.Column>
+      <Grid.Column>
+        <Sidebar.Pushable as={Segment}>
+          <SideBar
+            as={Menu}
+            animation="overlay"
+            icon="labeled"
+            inverted
+            onHide={() => setVisible(false)}
+            vertical
+            visible={visible}
+            width="thin"
+          >
+            <Menu.Item as="a">
+              <Icon name="home" />
+              Home
+            </Menu.Item>
+          </SideBar>
+
+          <Sidebar.Pusher dimmed={visible}>
+            <Segment basic>
+              <Header as="h3">Application Content</Header>
+            </Segment>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+      </Grid.Column>
+    </Grid>
   )
 }
