@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import SideBar from './components/SideBar'
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
+      <SideBar />
       <RouterProvider router={router} />
     </div>
   )
